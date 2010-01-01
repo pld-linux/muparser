@@ -8,7 +8,7 @@ Source0:	http://dl.sourceforge.net/muparser/%{name}_v130.tar.gz
 # Source0-md5:	f6b4d79aa0f762fd4bfeb38f47cf1d15
 URL:		http://muparser.sourceforge.net/
 BuildRequires:	dos2unix
-Buildroot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Many applications require the parsing of mathematical expressions. The
