@@ -35,7 +35,7 @@ Development files and the documentation
 	--enable-debug=no \
 	--enable-samples=no \
 
-%{__make} CXXFLAGS="$RPM_OPT_FLAGS" %{?_smp_mflags}
+%{__make} CXXFLAGS="$RPM_OPT_FLAGS"
 mv docs/html .
 dos2unix *.txt
 dos2unix html/sources/*
