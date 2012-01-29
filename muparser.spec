@@ -1,14 +1,16 @@
 Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
-Version:	1.30
+Version:	2.2.0
 Release:	1
 License:	MIT
 Group:		Libraries
-Source0:	http://downloads.sourceforge.net/muparser/%{name}_v130.tar.gz
-# Source0-md5:	f6b4d79aa0f762fd4bfeb38f47cf1d15
+Source0:	http://downloads.sourceforge.net/muparser/%{name}_v2_2_0.zip
+# Source0-md5:	27024148b389b98f1821252a7ba87b19
 URL:		http://muparser.sourceforge.net/
 BuildRequires:	dos2unix
+BuildRequires:	libstdc++-devel
+BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -30,6 +32,7 @@ Summary:	Development and doc files for muParser library
 Summary(pl.UTF-8):	Pliki programistyczne i dokumentacja do biblioteki muParser
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	libstdc++-devel
 
 %description devel
 Development and doc files for muParser library.
@@ -38,26 +41,23 @@ Development and doc files for muParser library.
 Pliki programistyczne i dokumentacja do biblioteki muParser.
 
 %prep
-%setup -q -n muparser
+%setup -q -n muparser_v2_2_0
 
 %build
 %configure \
-	--enable-shared=yes \
-	--enable-debug=no \
-	--enable-samples=no \
+	--disable-debug \
+	--disable-samples \
+	--enable-shared
 
 %{__make} \
-	CXXFLAGS="%{rpmcflags}"
-mv docs/html .
-dos2unix *.txt
-dos2unix html/sources/*
-dos2unix html/script/*
+	CPPFLAGS="%{rpmcppflags}" \
+	CXXFLAGS="%{rpmcxxflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
 %{__make} install \
-	libdir=$RPM_BUILD_ROOT%{_libdir} \
-	prefix=$RPM_BUILD_ROOT%{_prefix}
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -67,13 +67,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc Changes.txt Credits.txt License.txt
-%attr(755,root,root) %{_libdir}/libmuparser.so.0.0.0
-%attr(755,root,root) %ghost %{_libdir}/libmuparser.so.0
+%doc Changes.txt License.txt
+%attr(755,root,root) %{_libdir}/libmuparser.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libmuparser.so.2
 
 %files devel
 %defattr(644,root,root,755)
-%doc html
+%doc docs/html/*
 %attr(755,root,root) %{_libdir}/libmuparser.so
-%{_includedir}/*
+%{_includedir}/muParser*.h
 %{_pkgconfigdir}/muparser.pc
