@@ -1,12 +1,12 @@
 Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
-Version:	2.2.0
+Version:	2.2.3
 Release:	1
 License:	MIT
 Group:		Libraries
-Source0:	http://downloads.sourceforge.net/muparser/%{name}_v2_2_0.zip
-# Source0-md5:	27024148b389b98f1821252a7ba87b19
+Source0:	http://downloads.sourceforge.net/muparser/%{name}_v2_2_3.zip
+# Source0-md5:	9de40ec1dab5bd2787ee344fce5846ad
 URL:		http://muparser.sourceforge.net/
 BuildRequires:	dos2unix
 BuildRequires:	libstdc++-devel
@@ -41,7 +41,7 @@ Development and doc files for muParser library.
 Pliki programistyczne i dokumentacja do biblioteki muParser.
 
 %prep
-%setup -q -n muparser_v2_2_0
+%setup -q -n muparser_v2_2_3
 
 %build
 %configure \
