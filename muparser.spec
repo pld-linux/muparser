@@ -2,7 +2,7 @@ Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
 Version:	2.2.3
-Release:	1
+Release:	2
 License:	MIT
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/muparser/%{name}_v2_2_3.zip
