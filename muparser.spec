@@ -1,3 +1,7 @@
+#
+# Conditional build:
+%bcond_without	apidocs	# API documentation
+#
 Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
@@ -5,10 +9,13 @@ Version:	2.2.5
 Release:	1
 License:	MIT
 Group:		Libraries
+#Source0Download: https://github.com/beltoforion/muparser/releases
 Source0:	https://github.com/beltoforion/muparser/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	02dae671aa5ad955fdcbcd3fee313fb7
 URL:		http://muparser.beltoforion.de/
+%{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	libstdc++-devel
+BuildRequires:	sed >= 4.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -38,8 +45,22 @@ Development and doc files for muParser library.
 %description devel -l pl.UTF-8
 Pliki programistyczne i dokumentacja do biblioteki muParser.
 
+%package apidocs
+Summary:	API documentation for muParser library
+Summary(pl.UTF-8):	Dokumentacja API biblioteki muParser
+Group:		Documentation
+
+%description apidocs
+API documentation for muParser library.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API biblioteki muParser.
+
 %prep
 %setup -q
+
+# html/misc/footer.html not present (even in git)
+%{__sed} -i -e '/^HTML_FOOTER .*/s/.*/HTML_FOOTER = /' docs/Doxyfile
 
 %build
 %configure \
@@ -50,6 +71,11 @@ Pliki programistyczne i dokumentacja do biblioteki muParser.
 %{__make} \
 	CPPFLAGS="%{rpmcppflags}" \
 	CXXFLAGS="%{rpmcxxflags}"
+
+%if %{with apidocs}
+cd docs
+doxygen
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -65,13 +91,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc Changes.txt License.txt
+%doc Changes.txt License.txt docs/muparser_doc.html
 %attr(755,root,root) %{_libdir}/libmuparser.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmuparser.so.2
 
 %files devel
 %defattr(644,root,root,755)
-#%doc docs/html/*
 %attr(755,root,root) %{_libdir}/libmuparser.so
 %{_includedir}/muParser*.h
 %{_pkgconfigdir}/muparser.pc
+
+%if %{with apidocs}
+%files apidocs
+%defattr(644,root,root,755)
+%doc docs/html/*
+%endif
