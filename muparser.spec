@@ -1,20 +1,24 @@
 #
 # Conditional build:
 %bcond_without	apidocs	# API documentation
+%bcond_without	openmp	# OpenMP support
 #
 Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
-Version:	2.2.5
+Version:	2.3.2
 Release:	1
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/beltoforion/muparser/releases
 Source0:	https://github.com/beltoforion/muparser/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	02dae671aa5ad955fdcbcd3fee313fb7
-URL:		http://muparser.beltoforion.de/
+# Source0-md5:	cbc1b284e03abc7081b3c30997959893
+URL:		https://github.com/beltoforion/muparser
+BuildRequires:	cmake >= 3.1.0
 %{?with_apidocs:BuildRequires:	doxygen}
-BuildRequires:	libstdc++-devel
+%{?with_openmp:BuildRequires:	libgomp-devel}
+BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sed >= 4.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -49,9 +53,7 @@ Pliki programistyczne i dokumentacja do biblioteki muParser.
 Summary:	API documentation for muParser library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki muParser
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description apidocs
 API documentation for muParser library.
@@ -66,24 +68,23 @@ Dokumentacja API biblioteki muParser.
 %{__sed} -i -e '/^HTML_FOOTER .*/s/.*/HTML_FOOTER = /' docs/Doxyfile
 
 %build
-%configure \
-	--disable-debug \
-	--disable-samples \
-	--enable-shared
+install -d build
+cd build
+%cmake .. \
+	%{!?with_openmp:-DENABLE_OPENMP=OFF} \
+	-DENABLE_SAMPLES=OFF
 
-%{__make} \
-	CPPFLAGS="%{rpmcppflags}" \
-	CXXFLAGS="%{rpmcxxflags}"
+%{__make}
 
 %if %{with apidocs}
-cd docs
+cd ../docs
 doxygen
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
@@ -94,7 +95,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc Changes.txt License.txt docs/muparser_doc.html
+%doc Changes.txt License.txt README.rst docs/muparser_doc.html
 %attr(755,root,root) %{_libdir}/libmuparser.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmuparser.so.2
 
