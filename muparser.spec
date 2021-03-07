@@ -53,7 +53,7 @@ Pliki programistyczne i dokumentacja do biblioteki muParser.
 Summary:	API documentation for muParser library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki muParser
 Group:		Documentation
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description apidocs
 API documentation for muParser library.
