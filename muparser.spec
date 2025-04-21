@@ -6,15 +6,15 @@
 Summary:	A fast math parser library
 Summary(pl.UTF-8):	Biblioteka szybkiego analizatora matematycznego
 Name:		muparser
-Version:	2.3.4
+Version:	2.3.5
 Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/beltoforion/muparser/releases
 Source0:	https://github.com/beltoforion/muparser/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	b92180a648be88238008ea01a597ccb9
+# Source0-md5:	04d4224cb01712207b85af05a255b6fc
 URL:		https://github.com/beltoforion/muparser
-BuildRequires:	cmake >= 3.1.0
+BuildRequires:	cmake >= 3.15.0
 %{?with_apidocs:BuildRequires:	doxygen}
 %{?with_openmp:BuildRequires:	libgomp-devel}
 BuildRequires:	libstdc++-devel >= 6:4.7
@@ -69,18 +69,16 @@ Dokumentacja API biblioteki muParser.
 %{__sed} -i -e '/^HTML_FOOTER .*/s/.*/HTML_FOOTER = /' docs/Doxyfile
 
 %build
-install -d build
-cd build
-%cmake .. \
+%cmake -B build \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
 	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
 	%{!?with_openmp:-DENABLE_OPENMP=OFF} \
 	-DENABLE_SAMPLES=OFF
 
-%{__make}
+%{__make} -C build
 
 %if %{with apidocs}
-cd ../docs
+cd docs
 doxygen
 %endif
 
@@ -98,7 +96,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc CHANGELOG LICENSE README.rst docs/muparser_doc.html
+%doc CHANGELOG LICENSE README.md docs/muparser_doc.html
 %attr(755,root,root) %{_libdir}/libmuparser.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libmuparser.so.2
 
